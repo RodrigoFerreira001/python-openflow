@@ -56,3 +56,7 @@ class NotBinaryData(Exception):
     """Error raised when the content of a BinaryData attribute is not binary"""
     def __str__(self):
         return("The content of this variable needs to be binary data")
+
+
+class UnpackException(Exception):
+    pass

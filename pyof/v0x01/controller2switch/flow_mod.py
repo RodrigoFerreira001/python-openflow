@@ -89,7 +89,8 @@ class FlowMod(base.GenericMessage):
         self.header.message_type = of_header.Type.OFPT_FLOW_MOD
         self.header.length = 0
         self.header.xid = xid
-        self.match = match
+        if match is not None:
+            self.match = match
         self.cookie = cookie
         self.command = command
         self.idle_timeout = idle_timeout
@@ -98,4 +99,5 @@ class FlowMod(base.GenericMessage):
         self.buffer_id = buffer_id
         self.out_port = out_port
         self.flags = flags
-        self.actions = actions
+        if actions is not None:
+            self.actions = actions

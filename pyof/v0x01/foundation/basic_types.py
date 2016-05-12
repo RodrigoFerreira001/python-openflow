@@ -97,10 +97,6 @@ class UBInt8Array(base.GenericType):
         self._fmt = "!%d%c" % (self.length, 'B')
 
     def unpack(self, buff, offset=0):
-        """Unpack a buff and stores at value property.
-            :param buff:   Buffer where data is located.
-            :param offset: Where data stream begins.
-        """
         self._value = struct.unpack_from(self._fmt, buff, offset)
 
     def pack(self):
@@ -228,8 +224,8 @@ class FixedTypeList(list):
             offset: used if we need to shift the beginning of the data
         """
         item_size = self._pyof_class().get_size()
-        binary_items = [buff[i:i+2] for i in range(offset, len(buff),
-                                                   item_size)]
+        binary_items = [buff[i:i+item_size] for i in range(offset, len(buff),
+                                                           item_size)]
         for binary_item in binary_items:
             item = self._pyof_class()
             item.unpack(binary_item)

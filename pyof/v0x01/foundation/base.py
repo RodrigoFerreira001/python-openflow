@@ -29,8 +29,8 @@ class GenericType(object):
 
     We can't implemment the __get__ method here
     """
-    def __init__(self):
-        self._value = None
+    def __init__(self,value=None):
+        self._value = value
 
     def __repr__(self):
         return "{}({})".format(self.__class__.__name__, self._value)
@@ -88,8 +88,8 @@ class GenericType(object):
         try:
             self._value = struct.unpack_from(self._fmt, buff, offset)[0]
         except struct.error:
-            raise exceptions.Exception("Error while unpacking"
-                                       "data from buffer")
+            raise exceptions.UnpackException("Error while unpacking"
+                                             "data from buffer")
 
     def get_size(self):
         """ Return the size of type in bytes. """
@@ -172,7 +172,7 @@ class GenericStruct(metaclass=MetaStruct):
             message += getattr(self, _attr).pack()
         return message
 
-    def unpack(self, buff):
+    def unpack(self, buff, offset=0):
         """Unpack a binary message.
 
         This method updated the object attributes based on the unpacked
@@ -183,7 +183,7 @@ class GenericStruct(metaclass=MetaStruct):
             :param buff: binary data package to be unpacked
                          without the first 8 bytes (header)
         """
-        begin = 0
+        begin = offset
         for _attr, _class in self.__ordered__:
             if _attr != "header":
                 attribute = getattr(self, _attr)
