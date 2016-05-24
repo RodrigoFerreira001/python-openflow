@@ -50,20 +50,69 @@ class TestFlowMod(unittest.TestCase):
         """[Controller2Switch/FlowMod] - unpacking"""
         filename = os.path.join(os.path.dirname(os.path.realpath('__file__')),
                                 'raw/v0x01/ofpt_flow_add.dat')
+
+        idle_timeout = 0
+        hard_timeout = 0
+        priority = 65000
+        out_port = 65535
+        flags = 0
+
         with open(filename,'rb') as f:
             self.head.unpack(f.read(8))
             self.assertEqual(self.message.unpack(f.read()), None)
 
-        self.assertEqual(self.message.command,
-                         flow_mod.FlowModCommand.OFPFC_ADD)
+        self.assertEqual(self.message.command._value,
+                         flow_mod.FlowModCommand.OFPFC_ADD.value)
+
+        self.assertEqual(self.message.command._value,
+                         flow_mod.FlowModCommand.OFPFC_ADD.value)
+
+        self.assertEqual(self.message.idle_timeout._value,
+                         idle_timeout)
+
+        self.assertEqual(self.message.hard_timeout._value,
+                         hard_timeout)
+
+        self.assertEqual(self.message.priority._value,
+                         priority)
+
+        self.assertEqual(self.message.out_port._value,
+                         out_port)
+
+        self.assertEqual(self.message.flags._value,
+                         flags)
 
     def test_unpack_delete(self):
         """[Controller2Switch/FlowMod] - unpacking"""
         filename = os.path.join(os.path.dirname(os.path.realpath('__file__')),
                                 'raw/v0x01/ofpt_flow_delete.dat')
+        idle_timeout = 0
+        hard_timeout = 0
+        priority = 32768
+        out_port = 65535
+        flags = 0
+
         with open(filename,'rb') as f:
             self.head.unpack(f.read(8))
             self.assertEqual(self.message.unpack(f.read()), None)
 
-        self.assertEqual(self.message.command,
-                         flow_mod.FlowModCommand.OFPFC_DELETE)
+        self.assertEqual(self.message.command._value,
+                         flow_mod.FlowModCommand.OFPFC_DELETE.value)
+
+        self.assertEqual(self.message.idle_timeout._value,
+                         idle_timeout)
+
+        self.assertEqual(self.message.hard_timeout._value,
+                         hard_timeout)
+
+        self.assertEqual(self.message.priority._value,
+                         priority)
+
+        self.assertEqual(self.message.out_port._value,
+                         out_port)
+
+        self.assertEqual(self.message.flags._value,
+                         flags)
+
+        self.assertEqual(self.message.command._value,
+                         flow_mod.FlowModCommand.OFPFC_DELETE.value)
