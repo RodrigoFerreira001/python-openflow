@@ -31,5 +31,4 @@ class TestEchoReply(unittest.TestCase):
                                 'raw/v0x01/ofpt_echo_reply.dat')
         with open(filename,'rb') as f:
             self.header.unpack(f.read(8))
-            msg_size = self.header.length._value
             self.assertEqual(self.message.unpack(f.read()), None)

@@ -56,6 +56,8 @@ class TestFlowMod(unittest.TestCase):
         priority = 65000
         out_port = 65535
         flags = 0
+        dl_src = (0, 0, 0, 0, 0, 0)
+        dl_dst = (1, 35, 32, 0, 0, 1)
 
         with open(filename,'rb') as f:
             self.head.unpack(f.read(8))
@@ -81,6 +83,12 @@ class TestFlowMod(unittest.TestCase):
 
         self.assertEqual(self.message.flags._value,
                          flags)
+
+        self.assertEqual(self.message.match.dl_src._value,
+                         dl_src)
+
+        self.assertEqual(self.message.match.dl_dst._value,
+                         dl_dst)
 
     def test_unpack_delete(self):
         """[Controller2Switch/FlowMod] - unpacking"""
@@ -91,6 +99,8 @@ class TestFlowMod(unittest.TestCase):
         priority = 32768
         out_port = 65535
         flags = 0
+        dl_src = (0, 0, 0, 0, 0, 0)
+        dl_dst = (0, 0, 0, 0, 0, 0)
 
         with open(filename,'rb') as f:
             self.head.unpack(f.read(8))
@@ -116,3 +126,9 @@ class TestFlowMod(unittest.TestCase):
 
         self.assertEqual(self.message.command._value,
                          flow_mod.FlowModCommand.OFPFC_DELETE.value)
+
+        self.assertEqual(self.message.match.dl_src._value,
+                         dl_src)
+
+        self.assertEqual(self.message.match.dl_dst._value,
+                         dl_dst)
