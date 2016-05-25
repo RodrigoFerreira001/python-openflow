@@ -344,7 +344,8 @@ class BinaryData(base.GenericType):
         else:
             raise exceptions.NotBinarydata()
 
-    def unpack(self, buff):
+    def unpack(self, buff, offset=0):
+        print("Buffer: ", buff)
         self._value = buff
 
     def get_size(self):
