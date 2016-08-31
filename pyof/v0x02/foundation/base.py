@@ -13,6 +13,11 @@ The main classes of this module are :class:`GenericStruct`,
 :class:`GenericMessage`, :class:`GenericBitMask` and :class:`GenericType`.
 These classes are used in all parts of this library.
 """
-from pyof.v0x01.foundation.base import (GenericBitMask, GenericMessage,
+from pyof.v0x01.foundation.base import (DESC_STR_LEN, OFP_ETH_ALEN,
+                                        OFP_MAX_PORT_NAME_LEN,
+                                        OFP_MAX_TABLE_NAME_LEN, SERIAL_NUM_LEN,
+                                        GenericBitMask, GenericMessage,
                                         GenericStruct, GenericType,
                                         MetaBitMask, MetaStruct)
+
+OFP_VERSION = 0x02

@@ -73,7 +73,7 @@ setup(name='python-openflow',
       author_email='of-ng-dev@ncc.unesp.br',
       license='MIT',
       test_suite='tests',
-      packages=find_packages(exclude=['tests', '*v0x02*']),
+      packages=find_packages(exclude=['tests']),
       cmdclass={
           'lint': Linter,
           'quick_lint': FastLinter
