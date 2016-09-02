@@ -26,18 +26,21 @@ class ErrorType(Enum):
     OFPET_BAD_REQUEST = 1
     #: Error in action description
     OFPET_BAD_ACTION = 2
+    #: New - added in v0x02
+    #: Error in Match
+    OFPET_BAD_MATCH = 3
     #: Problem in modifying Flow entry
-    OFPET_FLOW_MOD_FAILED = 3
+    OFPET_FLOW_MOD_FAILED = 4
     #: New - added in v0x02
     #: Problem modifying group entry
-    OFPET_GROUP_MOD_FAILED = 4
+    OFPET_GROUP_MOD_FAILED = 5
     #: Problem in modifying Port entry
-    OFPET_PORT_MOD_FAILED = 5
+    OFPET_PORT_MOD_FAILED = 6
     #: New - added in v0x02
     #: Problem in handling tables
-    OFPET_TABLE_MOD_FAILED = 6
+    OFPET_TABLE_MOD_FAILED = 7
     #: Problem in modifying Queue entry
-    OFPET_QUEUE_OP_FAILED = 7
+    OFPET_QUEUE_OP_FAILED = 8
 
 
 class TableModFailed(Enum):
@@ -120,3 +123,18 @@ class FlowModFailedCode(Enum):
     OFPFMFC_BAD_COMMAND = 6
     #: Unsupported action list - cannot process in the order specified
     OFPFMFC_UNSUPPORTED = 7
+
+
+class BadMatch(Enum):
+    """Error_msg 'code' values for OFPET_BAD_MATCH.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+    OFPBMC_BAD_TYPE = 0
+    OFPBMC_BAD_LEN = 1
+    OFPBMC_BAD_TAG = 2
+    OFPBMC_BAD_DL_ADDR_MASK = 3
+    OFPBMC_BAD_NW_ADDR_MASK = 4
+    OFPBMC_BAD_WILDCARDS = 5
+    OFPBMC_BAD_FIELD = 6
+    OFPBMC_BAD_VALUE = 7
