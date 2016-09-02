@@ -111,6 +111,9 @@ class PortState(GenericBitMask):
     OFPPS_LIVE = 1 << 2
 
 
+# Classes
+
+
 class Port(GenericStruct):
     """Description of a port.
 
@@ -172,3 +175,21 @@ class Port(GenericStruct):
         self.peer = peer
         self.curr_speed = curr_speed
         self.max_speed = max_speed
+
+
+class ListOfPorts(FixedTypeList):
+    """List of Ports.
+
+    Represented by instances of Port and used on
+    :class:`.FeaturesReply`/:class:`.SwitchFeatures` objects.
+    """
+
+    def __init__(self, items=None):
+        """The constructor takes the optional parameter below.
+
+        Args:
+            items (:class:`list`, :class:`Port`): One :class:`Port`
+                instance or list.
+        """
+        super().__init__(pyof_class=Port,
+                         items=items)
