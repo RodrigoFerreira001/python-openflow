@@ -27,20 +27,23 @@ class ErrorType(Enum):
     #: Error in action description
     OFPET_BAD_ACTION = 2
     #: New - added in v0x02
+    #:
+    OFPET_BAD_INSTRUCTION = 3
+    #: New - added in v0x02
     #: Error in Match
-    OFPET_BAD_MATCH = 3
+    OFPET_BAD_MATCH = 4
     #: Problem in modifying Flow entry
-    OFPET_FLOW_MOD_FAILED = 4
+    OFPET_FLOW_MOD_FAILED = 5
     #: New - added in v0x02
     #: Problem modifying group entry
-    OFPET_GROUP_MOD_FAILED = 5
+    OFPET_GROUP_MOD_FAILED = 6
     #: Problem in modifying Port entry
-    OFPET_PORT_MOD_FAILED = 6
+    OFPET_PORT_MOD_FAILED = 7
     #: New - added in v0x02
     #: Problem in handling tables
-    OFPET_TABLE_MOD_FAILED = 7
+    OFPET_TABLE_MOD_FAILED = 8
     #: Problem in modifying Queue entry
-    OFPET_QUEUE_OP_FAILED = 8
+    OFPET_QUEUE_OP_FAILED = 9
 
 
 class TableModFailed(Enum):
@@ -130,11 +133,38 @@ class BadMatch(Enum):
 
     'data' contains at least the first 64 bytes of the failed request.
     """
+    #: Unsupported match type specified by the match
     OFPBMC_BAD_TYPE = 0
+    #: Lenght problem in match
     OFPBMC_BAD_LEN = 1
+    #: Match uses an unsupported tag/encap
     OFPBMC_BAD_TAG = 2
+    #: Unsupported datalink addr mask - switch does not support arbitrary datapath addr mask
     OFPBMC_BAD_DL_ADDR_MASK = 3
+    #: Unsupported datalink addr mask - switch does not support arbitrary network addr mask
     OFPBMC_BAD_NW_ADDR_MASK = 4
+    #: Unsupported wildcard specified in the match
     OFPBMC_BAD_WILDCARDS = 5
+    #: Unsupported field in the match
     OFPBMC_BAD_FIELD = 6
+    #: Unsupported field in the field
     OFPBMC_BAD_VALUE = 7
+
+
+class BadInstruction(Enum):
+    """Error_msg 'code' values for OFPET_BAD_INSTRUCTION.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+    #: Unknown Instruction
+    OFPBIC_UNKNOWN_INST = 0
+    #: Switch or table does not support the instruction
+    OFPBIC_UNSUP_INST = 1
+    #: Invalid table-id specified
+    OFPBIC_BAD_TABLE_ID = 2
+    #: Metadata value unsupported by datapath
+    OFPBIC_UNSUP_METADATA = 3
+    #: Metadata mask value unsupported by datapath
+    OFPBIC_UNSUP_METADATA_MASK = 4
+    #: Specific experimenter instruction unsupported
+    OFPBIC_UNSUP_EXP_INST = 5
