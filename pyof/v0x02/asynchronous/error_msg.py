@@ -94,3 +94,29 @@ class GroupModFailed(Enum):
     OFPGMFC_LOOP = 7
     #: Group no modfied because group doesnt exist
     OFPGMFC_UNKNOWN_GROUP = 8
+
+
+class FlowModFailedCode(Enum):
+    """Error_msg 'code' values for OFPET_FLOW_MOD_FAILED.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+
+    #: New - added v0x02
+    #: Unspecified error
+    OFPFMFC_UNKNOWN = 0
+    #: Flow not added because of full tables
+    OFPFMFC_ALL_TABLES_FULL = 1
+    #: New - added v0x02
+    #: Table does not exist
+    OFPFMFC_BAD_TABLE_ID = 2
+    #: Attempted to add overlapping flow with CHECK_OVERLAP flag set
+    OFPFMFC_OVERLAP = 3
+    #: Permissions error
+    OFPFMFC_EPERM = 4
+    #: Flow not added because of non-zero idle/hard timeout
+    OFPFMFC_BAD_EMERG_TIMEOUT = 5
+    #: Unknown command
+    OFPFMFC_BAD_COMMAND = 6
+    #: Unsupported action list - cannot process in the order specified
+    OFPFMFC_UNSUPPORTED = 7
