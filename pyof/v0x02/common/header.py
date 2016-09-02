@@ -3,12 +3,15 @@
 Only differences between versions.
 """
 from enum import Enum, unique
-from pyof.v0x01.common.header import Header as Header0x01
-from pyof.v0x02.foundation.base import OFP_VERSION
-from pyof.v0x02.foundation.basic_types import UBInt8
+from random import randint
 
+from pyof.v0x02.foundation.base import OFP_VERSION, GenericStruct
+from pyof.v0x02.foundation.basic_types import UBInt8, UBInt16, UBInt32
 
 __all__ = ('Header', 'Type')
+
+# Max xid of a message considering it's size (UBInt32 on v0x01)
+MAXID = 2147483647
 
 
 @unique
@@ -60,7 +63,23 @@ class Type(Enum):
     OFPT_QUEUE_GET_CONFIG_REPLY = 22
 
 
-class Header(Header0x01):
-    """v0x02 Header differences."""
+class Header(GenericStruct):
+    """Representation of an OpenFlow message Header."""
 
     version = UBInt8(OFP_VERSION)
+    message_type = UBInt8(enum_ref=Type)
+    length = UBInt16()
+    xid = UBInt32()
+
+    def __init__(self, message_type=None, length=None, xid=randint(0, MAXID)):
+        """The constructor takes the optional parameters below.
+
+        Args:
+            message_type (Type): Type of the message.
+            xid (int): ID of the message. Defaults to a random integer.
+            length (int): Length of the message, including the header itself.
+        """
+        super().__init__()
+        self.message_type = message_type
+        self.length = length
+        self.xid = xid
