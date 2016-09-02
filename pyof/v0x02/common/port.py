@@ -4,7 +4,7 @@ from enum import Enum, unique
 from pyof.v0x02.foundation.base import (GenericBitMask, GenericStruct,
                                         OFP_MAX_PORT_NAME_LEN)
 from pyof.v0x02.foundation.basic_types import (Char, FixedTypeList, HWAddress,
-                                               UBInt32)
+                                               PAD, UBInt32)
 
 
 @unique

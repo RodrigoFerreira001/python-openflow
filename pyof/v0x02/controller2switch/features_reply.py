@@ -68,6 +68,7 @@ class SwitchFeatures(GenericMessage):
         self.n_buffers = n_buffers
         self.n_tables = n_tables
         self.capabilities = capabilities
+        self.reserved = 0
         self.ports = [] if ports is None else ports
 
 
