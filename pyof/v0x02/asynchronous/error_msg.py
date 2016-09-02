@@ -43,3 +43,20 @@ class TableModFailed(Enum):
     OFPTMFC_BAD_TABLE = 0,
     #: Specified config does not exist
     OFPTMFC_BAD_CONFIG = 1
+
+class PortModFailedCode(Enum):
+    """Error_msg 'code' values for OFPET_PORT_MOD_FAILED.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+
+    #: Specified port does not exist
+    OFPPMFC_BAD_PORT = 0
+    #: Specified hardware address is wrong
+    OFPPMFC_BAD_HW_ADDR = 1
+    #: New - added in v0x02
+    #: Specified config is invalid
+    OFPPMFC_BAD_CONFIG = 2
+    #: New - added in v0x02
+    #: Specified advertise is invalid
+    OFPPMFC_BAD_ADVERTISE =3
