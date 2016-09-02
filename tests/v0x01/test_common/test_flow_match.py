@@ -1,16 +1,19 @@
+"""Flow match tests."""
 import unittest
 
 from pyof.v0x01.common import flow_match
 
 
 class TestMatch(unittest.TestCase):
+    """Match class tests."""
 
     def setUp(self):
+        """Message to be used in tests."""
         self.message = flow_match.Match()
         self.message.wildcards = flow_match.FlowWildCards.OFPFW_IN_PORT
         self.message.in_port = 22
-        self.message.dl_src = [192, 168, 0, 2]
-        self.message.dl_dst = [129, 168, 0, 3]
+        self.message.dl_src = '00:00:00:00:00:00'
+        self.message.dl_dst = '00:00:00:00:00:00'
         self.message.dl_vlan = 1
         self.message.dl_vlan_pcp = 1
         self.message.dl_type = 1
@@ -22,17 +25,15 @@ class TestMatch(unittest.TestCase):
         self.message.tp_dst = 22
 
     def test_get_size(self):
-        """[Common/FlowMatch] - size 40"""
+        """[Common/FlowMatch] - size 40."""
         self.assertEqual(self.message.get_size(), 40)
 
     @unittest.skip('Not yet implemented')
     def test_pack(self):
-        """[Common/FlowMatch] - packing"""
-        # TODO
+        """[Common/FlowMatch] - packing."""
         pass
 
     @unittest.skip('Not yet implemented')
     def test_unpack(self):
-        """[Common/FlowMatch] - unpacking"""
-        # TODO
+        """[Common/FlowMatch] - unpacking."""
         pass
