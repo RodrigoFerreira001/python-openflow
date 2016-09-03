@@ -1,4 +1,6 @@
 """FeatureReply message tests."""
+from unittest import skip
+
 from pyof.v0x02.common.port import Port, PortConfig, PortState
 from pyof.v0x02.controller2switch.features_reply import FeaturesReply
 from pyof.v0x02.foundation.basic_types import HWAddress
@@ -16,6 +18,16 @@ class TestFeaturesReply(TestStruct):
         kwargs = _get_kwargs()
         super().set_raw_dump_object(FeaturesReply, **kwargs)
         super().set_minimum_size(32)
+
+    @skip('No dump file.')
+    def test_pack(self):
+        """Packing test."""
+        pass
+
+    @skip('No dump file.')
+    def test_unpack(self):
+        """Unpacking test."""
+        pass
 
 
 def _get_kwargs():
