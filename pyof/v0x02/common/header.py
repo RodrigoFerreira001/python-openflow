@@ -5,13 +5,11 @@ Only differences between versions.
 from enum import Enum, unique
 from random import randint
 
+from pyof.v0x01.common.header import MAXID
 from pyof.v0x02.foundation.base import OFP_VERSION, GenericStruct
 from pyof.v0x02.foundation.basic_types import UBInt8, UBInt16, UBInt32
 
 __all__ = ('Header', 'Type')
-
-# Max xid of a message considering it's size (UBInt32 on v0x01)
-MAXID = 2147483647
 
 
 @unique
