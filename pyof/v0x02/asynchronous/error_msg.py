@@ -27,7 +27,7 @@ class ErrorType(Enum):
     #: Error in action description
     OFPET_BAD_ACTION = 2
     #: New - added in v0x02
-    #:
+    #: Error in instruction list
     OFPET_BAD_INSTRUCTION = 3
     #: New - added in v0x02
     #: Error in Match
@@ -168,3 +168,38 @@ class BadInstruction(Enum):
     OFPBIC_UNSUP_METADATA_MASK = 4
     #: Specific experimenter instruction unsupported
     OFPBIC_UNSUP_EXP_INST = 5
+
+class BadAction(Enum):
+
+    #: Unknown action type
+    OFPBAC_BAD_TYPE = 0
+    #: Length problem in actions
+    OFPBAC_BAD_LEN = 1
+    #: New - Added in v0x02
+    #: Unknow experimenter id specified
+    OFPBAC_BAD_EXPERIMENTER = 2
+    #: New - Added in v0x02
+    #: Unknow action type for experimenter id
+    OFPBAC_BAD_EXPERIMENTER_TYPE = 3
+    #: Problem validating output action
+    OFPBAC_BAD_OUT_PORT = 4
+    #: Bad action argument
+    OFPBAC_BAD_ARGUMENT = 5
+    #: Permissions error
+    OFPBAC_EPERM = 6
+    #: Can’t handle this many actions
+    OFPBAC_TOO_MANY = 7
+    #: Problem validating output queue
+    OFPBAC_BAD_QUEUE = 8
+    #: New - Added in v0x02
+    #: Invalid group id in forward action
+    OFPBAC_BAD_OUT_GROUP = 9
+    #: New - Added in v0x02
+    #: Invalid group id in forward action
+    OFPBAC_MATCH_INCONSISTENT = 10
+    #: New - Added in v0x02
+    #:  Action order is unsupported for the action list in an Apply-Actions instruction
+    OFPBAC_UNSUPPORTED_ORDER = 11
+    #: New - Added in v0x02
+    #: Actions uses an unsupported tag/encap
+    OFPBAC_BAD_TAG = 12
