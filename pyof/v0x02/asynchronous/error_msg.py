@@ -44,6 +44,9 @@ class ErrorType(Enum):
     OFPET_TABLE_MOD_FAILED = 8
     #: Problem in modifying Queue entry
     OFPET_QUEUE_OP_FAILED = 9
+    #: New - added in v0x02
+    #: Switch config request failed
+    OFPET_SWITCH_CONFIG_FAILED = 10
 
 
 class TableModFailed(Enum):
@@ -233,3 +236,17 @@ class BadRequestCode(Enum):
     #: New - added to v0x02
     #: Specified table-id invalid or does not exist.
     OFPBRC_BAD_TABLE_ID = 9
+
+
+class SwitchConfigFailed(Enum):
+    """Error msg 'code' values for OFPET_SWITCH_CONFIG_FAILED.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+
+    #: New - added in v0x02
+    #: Specified flags is invalid
+    OFPSCFC_BAD_FLAGS = 0
+    #: New - added in v0x02
+    #: Specified len is invalid
+    OFPSCFC_BAD_LEN = 1
