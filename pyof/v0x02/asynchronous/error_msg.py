@@ -203,3 +203,33 @@ class BadAction(Enum):
     #: New - Added in v0x02
     #: Actions uses an unsupported tag/encap
     OFPBAC_BAD_TAG = 12
+
+
+class BadRequestCode(Enum):
+    """Error_msg 'code' values for OFPET_BAD_REQUEST.
+
+    'data' contains at least the first 64 bytes of the failed request.
+    """
+
+    #: ofp_header.version not supported.
+    OFPBRC_BAD_VERSION = 0
+    #: ofp_header.type not supported.
+    OFPBRC_BAD_TYPE = 1
+    #: ofp_stats_request.type not supported.
+    OFPBRC_BAD_STAT = 2
+    #: Vendor not supported (in ofp_vendor_header or ofp_stats_request or
+    #: ofp_stats_reply).
+    OFPBRC_BAD_EXPERIMENTER = 3
+    #: Vendor subtype not supported.
+    OFPBRC_BAD_SUBTYPE = 4
+    #: Permissions error.
+    OFPBRC_EPERM = 5
+    #: Wrong request length for type.
+    OFPBRC_BAD_LEN = 6
+    #: Specified buffer has already been used.
+    OFPBRC_BUFFER_EMPTY = 7
+    #: Specified buffer does not exist.
+    OFPBRC_BUFFER_UNKNOWN = 8
+    #: New - added to v0x02
+    #: Specified table-id invalid or does not exist.
+    OFPBRC_BAD_TABLE_ID = 9
