@@ -20,4 +20,9 @@ from pyof.v0x01.foundation.base import (DESC_STR_LEN, OFP_ETH_ALEN,
                                         GenericStruct, GenericType,
                                         MetaBitMask, MetaStruct)
 
+__all__ = ('DESC_STR_LEN', 'OFP_ETH_ALEN', 'OFP_MAX_PORT_NAME_LEN',
+           'OFP_MAX_TABLE_NAME_LEN', 'OFP_VERSION', 'SERIAL_NUM_LEN',
+           'GenericBitMask', 'GenericMessage', 'GenericStruct', 'GenericType',
+           'MetaBitMask', 'MetaStruct')
+
 OFP_VERSION = 0x02
