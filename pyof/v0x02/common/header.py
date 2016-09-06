@@ -41,24 +41,26 @@ class Type(Enum):
     # Controller/switch message
     OFPT_PACKET_OUT = 13
     OFPT_FLOW_MOD = 14
-    OFPT_PORT_MOD = 15
     #: New - added in v0x02
-    OFPT_TABLE_MOD = 16
+    OFPT_GROUP_MOD = 15
+    OFPT_PORT_MOD = 16
+    #: New - added in v0x02
+    OFPT_TABLE_MOD = 17
 
     # Statistics messages
     # Controller/Switch message
-    OFPT_STATS_REQUEST = 17
-    OFPT_STATS_REPLY = 18
+    OFPT_STATS_REQUEST = 18
+    OFPT_STATS_REPLY = 19
 
     # Barrier messages
     # Controller/Switch message
-    OFPT_BARRIER_REQUEST = 19
-    OFPT_BARRIER_REPLY = 20
+    OFPT_BARRIER_REQUEST = 20
+    OFPT_BARRIER_REPLY = 21
 
     # Queue Configuration messages
     # Controller/Switch message
-    OFPT_QUEUE_GET_CONFIG_REQUEST = 21
-    OFPT_QUEUE_GET_CONFIG_REPLY = 22
+    OFPT_QUEUE_GET_CONFIG_REQUEST = 22
+    OFPT_QUEUE_GET_CONFIG_REPLY = 23
 
 
 class Header(GenericStruct):
