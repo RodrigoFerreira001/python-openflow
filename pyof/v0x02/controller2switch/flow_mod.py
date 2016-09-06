@@ -3,7 +3,6 @@
 from pyof.v0x02.common.flow_match import Match
 from pyof.v0x02.common.header import Header, Type
 from pyof.v0x02.common.phy_port import Port
-from pyof.v0x02.controller2switch.common import ListOfActions
 from pyof.v0x02.foundation.base import GenericBitMask, GenericMessage
 from pyof.v0x02.foundation.basic_types import (PAD, UBInt8, UBInt16, UBInt32,
                                                UBInt64)

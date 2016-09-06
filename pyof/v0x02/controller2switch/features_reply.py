@@ -5,7 +5,7 @@ from pyof.v0x02.common.port import ListOfPorts
 from pyof.v0x02.foundation.base import GenericBitMask, GenericMessage
 from pyof.v0x02.foundation.basic_types import PAD, UBInt8, UBInt32, UBInt64
 
-__all__ = ('FeaturesReply', 'Capabilities', 'SwitchFeatures')
+__all__ = ('Capabilities', 'FeaturesReply', 'SwitchFeatures')
 
 
 class Capabilities(GenericBitMask):
