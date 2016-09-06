@@ -5,7 +5,7 @@ from pyof.v0x02.foundation.base import GenericBitMask, GenericStruct
 from pyof.v0x02.foundation.basic_types import (PAD, HWAddress, UBInt8, UBInt16,
                                                UBInt32, UBInt64)
 
-__all__ = ('OFPMT_STANDARD_LENGTH', 'Match', 'MatchType', 'FlowWildCards')
+__all__ = ('OFPMT_STANDARD_LENGTH', 'FlowWildCards', 'Match', 'MatchType')
 
 
 #: Length of :class:`.Match`.

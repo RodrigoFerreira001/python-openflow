@@ -4,3 +4,7 @@ from pyof.v0x01.common.action import (ActionDLAddr, ActionEnqueue,
                                       ActionOutput, ActionTPPort, ActionType,
                                       ActionVendorHeader, ActionVlanPCP,
                                       ActionVlanVid)
+
+__all__ = ('ActionDLAddr', 'ActionEnqueue', 'ActionHeader', 'ActionNWAddr',
+           'ActionNWTos', 'ActionOutput', 'ActionTPPort', 'ActionType',
+           'ActionVendorHeader', 'ActionVlanPCP', 'ActionVlanVid')

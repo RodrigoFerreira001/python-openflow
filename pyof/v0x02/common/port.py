@@ -6,6 +6,8 @@ from pyof.v0x02.foundation.base import (GenericBitMask, GenericStruct,
 from pyof.v0x02.foundation.basic_types import (Char, FixedTypeList, HWAddress,
                                                PAD, UBInt32)
 
+__all__ = ('Port', 'PortConfig', 'PortFeatures', 'PortNo', 'PortState',
+           'ListOfPorts')
 
 @unique
 class PortNo(Enum):
