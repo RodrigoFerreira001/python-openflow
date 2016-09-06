@@ -8,7 +8,6 @@ from pyof.v0x02.common.header import Header, Type
 from pyof.v0x02.foundation.base import GenericMessage
 from pyof.v0x02.foundation.basic_types import UBInt32
 
-# __all__ = ('VendorHeader',)
 __all__ = ('ExperimenterHeader',)
 
 # Classes
