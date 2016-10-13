@@ -119,7 +119,10 @@ class Match(GenericStruct):
             tp_dst (int): TCP/UDP destination port. (default: 0)
         """
         super().__init__()
-        [setattr(self, field, value) for field, value in kwargs.items()]
+
+        for field, value in kwargs.items():
+            if hasattr(self,field):
+                setattr(self, field, value)
 
     def __setattr__(self, name, value):
 
