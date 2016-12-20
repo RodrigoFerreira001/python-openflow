@@ -262,16 +262,12 @@ class IPAddress(GenericType):
         Raises:
             struct.error: If the value does not fit the binary format.
         """
-        if isinstance(value, type(self)):
-            return value.pack()
-
-        if value is None:
-            value = self._value
-
-        if value.find('/') >= 0:
-            value = value.split('/')[0]
-
         try:
+            if isinstance(value, type(self)):
+                return value.pack()
+            if value is None:
+                value = self._value
+            value = value.split('/')[0]
             value = value.split('.')
             return struct.pack('!4B', *[int(x) for x in value])
         except struct.error as err:
