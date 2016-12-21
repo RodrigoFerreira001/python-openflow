@@ -28,8 +28,7 @@ from pyof.foundation.exceptions import (BadValueException, PackException,
 
 
 # This will determine the order on sphinx documentation.
-__all__ = ('GenericStruct', 'GenericMessage', 'GenericType', 'GenericBitMask',
-           'MetaStruct', 'MetaBitMask')
+__all__ = ('GenericStruct', 'GenericMessage', 'GenericType', 'GenericBitMask')
 
 # Classes
 
