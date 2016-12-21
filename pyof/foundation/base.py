@@ -284,7 +284,7 @@ class GenericStruct(object, metaclass=MetaStruct):
     def _attr_fits_into_class(attr, cls):
         if not isinstance(attr, cls):
             try:
-                struct.pack(cls._fmt, attr)  # pylint: disable=protected-access
+                cls.pack(attr)
             except struct.error:
                 return False
         return True
