@@ -293,15 +293,10 @@ class GenericStruct(object, metaclass=MetaStruct):
     # pylint: disable=no-member
     def _validate_attributes_type(self):
         """Validate the type of each attribute."""
-        for _attr in self.__ordered__:
-            _class = self.__ordered__[_attr]
-            attr = getattr(self, _attr)
-            if isinstance(attr, _class):
-                return True
-            elif issubclass(_class, GenericType):
-                if GenericStruct._attr_fits_into_class(attr, _class):
-                    return True
-            elif not isinstance(attr, _class):
+        for instance_attr, class_attr in self.get_attributes():
+            try:
+                class_attr.pack(instance_attr)
+            except PackException:
                 return False
         return True
 
