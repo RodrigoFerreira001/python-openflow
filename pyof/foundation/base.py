@@ -156,10 +156,10 @@ class GenericType:
         """
         if isinstance(value, type(self)):
             return value.pack()
-
-        if value is None:
+        elif value is None:
             value = self.value
-        elif 'value' in dir(value):
+
+        if 'value' in dir(value):
             # if it is enum or bitmask gets only the 'int' value
             value = value.value
 

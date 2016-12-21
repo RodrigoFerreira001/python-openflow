@@ -192,17 +192,10 @@ class Char(GenericType):
         """
         if isinstance(value, type(self)):
             return value.pack()
-
-        try:
-            if value is None:
-                value = self.value
-            packed = struct.pack(self._fmt, bytes(value, 'ascii'))
-            return packed[:-1] + b'\0'  # null-terminated
-        except struct.error as err:
-            msg = "Char Pack error. "
-            msg += "Class: {}, struct error: {} ".format(type(value).__name__,
-                                                         err)
-            raise exceptions.PackException(msg)
+        elif value is None:
+            value = self.value
+        value = bytes(value, 'ascii')
+        return super().pack(value)[:-1] + b'\0'  # null-terminated
 
     def unpack(self, buff, offset=0):
         """Unpack a binary message into this object's attributes.
@@ -232,6 +225,7 @@ class IPAddress(GenericType):
 
     netmask = UBInt32()
     max_prefix = UBInt32(32)
+    _fmt = '!4B'
 
     def __init__(self, address="0.0.0.0/32"):
         """The constructor takes the parameters below.
@@ -262,19 +256,12 @@ class IPAddress(GenericType):
         Raises:
             struct.error: If the value does not fit the binary format.
         """
-        try:
-            if isinstance(value, type(self)):
-                return value.pack()
-            if value is None:
-                value = self._value
-            value = value.split('/')[0]
-            value = value.split('.')
-            return struct.pack('!4B', *[int(x) for x in value])
-        except struct.error as err:
-            msg = "IPAddress error. "
-            msg += "Class: {}, struct error: {} ".format(type(value).__name__,
-                                                         err)
-            raise exceptions.PackException(msg)
+        if isinstance(value, type(self)):
+            return value.pack()
+        elif value is None:
+            value = self._value
+        value = value.split('/')[0].split('.')
+        return struct.pack(self._fmt, *[int(x) for x in value])
 
     def unpack(self, buff, offset=0):
         """Unpack a binary message into this object's attributes.
@@ -312,6 +299,8 @@ class IPAddress(GenericType):
 class HWAddress(GenericType):
     """Defines a hardware address."""
 
+    _fmt = '!6B'
+
     def __init__(self, hw_address='00:00:00:00:00:00'):
         """The constructor takes the parameters below.
 
@@ -335,22 +324,14 @@ class HWAddress(GenericType):
         """
         if isinstance(value, type(self)):
             return value.pack()
-
-        if value is None:
-            value = self._value
+        elif value is None:
+            value = self.value
 
         if value == 0:
             value = '00:00:00:00:00:00'
 
         value = value.split(':')
-
-        try:
-            return struct.pack('!6B', *[int(x, 16) for x in value])
-        except struct.error as err:
-            msg = "HWAddress error. "
-            msg += "Class: {}, struct error: {} ".format(type(value).__name__,
-                                                         err)
-            raise exceptions.PackException(msg)
+        return struct.pack(self._fmt, *[int(x, 16) for x in value])
 
     def unpack(self, buff, offset=0):
         """Unpack a binary message into this object's attributes.
