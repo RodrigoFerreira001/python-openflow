@@ -499,6 +499,8 @@ class GenericMessage(GenericStruct):
                 size = self._unpack_attribute(name, value, buff, begin)
                 begin += size
 
+        self.update_header_length()
+
     def _validate_message_length(self):
         if not self.header.length == self.get_size():
             return False
