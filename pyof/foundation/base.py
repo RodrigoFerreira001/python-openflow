@@ -1131,7 +1131,7 @@ class MetaBitMask(type):
         return type.__new__(mcs, name, bases, classdict)
 
     def __getattr__(cls, name):
-        return cls._enum[name]
+        return cls._enum.get(name, None)
 
     def __dir__(cls):
         res = dir(type(cls)) + list(cls.__dict__.keys())

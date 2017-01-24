@@ -35,6 +35,7 @@ class FlowWildCards(GenericBitMask):
 class Match(Match_v0x01):
     match_type = UBInt16(value=MatchType.OFPMT_STANDARD, enum_ref=MatchType)
     length = UBInt16(OFPMT_STANDARD_LENGTH)
+
     in_port = UBInt16(0)
     wildcards = UBInt32(value=FlowWildCards.OFPFW_ALL, enum_ref=FlowWildCards)
     #: Ethernet source address. (default: '00:00:00:00:00:00')
@@ -57,17 +58,17 @@ class Match(Match_v0x01):
     nw_proto = UBInt8(0)
     #: ARP opcode.
     nw_src = IPAddress()
-    nw_src_mask = UBInt32()
+    nw_src_mask = UBInt32(0)
     nw_dst = IPAddress()
-    nw_dst_mask = UBInt32()
-    tp_src = UBInt16()
-    tp_dst = UBInt16()
-    mpls_label = UBInt16()
-    mpls_tc = UBInt8()
+    nw_dst_mask = UBInt32(0)
+    tp_src = UBInt16(0)
+    tp_dst = UBInt16(0)
+    mpls_label = UBInt16(0)
+    mpls_tc = UBInt8(0)
     #: Align to 64-bits.
     pad2 = Pad(3)
-    metadata = UBInt64()
-    metadata_mask = UBInt64()
+    metadata = UBInt64(0)
+    metadata_mask = UBInt64(0)
 
 class VlanId(Enum):
     """"""

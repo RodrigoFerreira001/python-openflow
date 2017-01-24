@@ -125,13 +125,13 @@ class Match(GenericStruct):
     def __setattr__(self, name, value):
 
         # converts string ip_address to IPAddress
-        if isinstance(getattr(Match, name), IPAddress) and \
+        if isinstance(getattr(type(self), name), IPAddress) and \
                 not isinstance(value, IPAddress):
             if isinstance(value, list):
                 value = ".".join(str(x) for x in value)
             value = IPAddress(value)  # noqa
         # convertstring or list of hwaddress to HWAddress
-        elif isinstance(getattr(Match, name), HWAddress) and \
+        elif isinstance(getattr(type(self), name), HWAddress) and \
                 not isinstance(value, HWAddress):
             if isinstance(value, list):
                 values = ["{0:0{1}x}".format(x, 2) for x in value]
@@ -169,7 +169,7 @@ class Match(GenericStruct):
         if field in [None, 'wildcards'] or isinstance(value, Pad):
             return
 
-        default_value = getattr(Match, field)
+        default_value = getattr(type(self), field)
         if isinstance(default_value, IPAddress):
             if field is 'nw_dst':
                 self.wildcards |= FlowWildCards.OFPFW_NW_DST_MASK
@@ -182,7 +182,8 @@ class Match(GenericStruct):
         else:
             wildcard_field = "OFPFW_{}".format(field.upper())
             wildcard = getattr(FlowWildCards, wildcard_field)
-
+            if wildcard is None:
+                return
             if value == default_value and not (self.wildcards & wildcard) or \
                value != default_value and (self.wildcards & wildcard):
                 self.wildcards ^= wildcard
