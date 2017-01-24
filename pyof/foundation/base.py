@@ -1016,14 +1016,14 @@ class GenericMessage(GenericStruct):
         super().__init__()
         self.header.xid = randint(0, MAXID) if xid is None else xid
 
+        self.update_header_length()
+
     def __init_subclass__(cls, **kwargs):
         if cls.header is None or cls.header.__class__.__name__ != 'Header':
             msg = "The header attribute must be implemented on the class "
             msg += cls.__name__ + "."
             raise NotImplementedError(msg)
         super().__init_subclass__(**kwargs)
-
-        self.update_header_length()
 
     def _validate_message_length(self):
         return self.header.length == self.get_size()
