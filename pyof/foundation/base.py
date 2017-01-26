@@ -509,6 +509,58 @@ class MetaStruct(type):
         return new_cls
 
     @staticmethod
+    def update_gstruct(old_struct, new_version):
+        """Return an updated instance of GenericStruct.
+
+        The method receives an instance of a GenericStruct (or GenericMessage),
+        and update it the the `new_version` version of it. Besides only
+        instantiating the newer version, each attribute of the struct will be
+        evaluated to assure that its class attributes predefined values will
+        also be inherited/copied to the new instance.
+        We have to keep in mind that the class attributes of a generic struct
+        are **instances** of other generic structs or generic types. Thus, it
+        is not enought to just get a new instance of that attribute class, we
+        also have to check for any contents passed to the attribute init.
+
+        For example, the Header class does not contain a default value for the
+        message_type attribute, so, its default is None. But when we define a
+        new Message (:class:`GenericMessage`), we define the message_type of
+        that Message class. So, when we are doing our update here of the header
+        attribute of the Message class to a newer version, we need to set the
+        `message_type` value on the newer class.
+
+        This is not a trivial method, and the understandment of it may take
+        some time. Do not edit anything if you are not absolutely sure about
+        what you are doing.
+
+        Inside this method other two methods were also defined, just to make
+        the code a little bit more containerized.
+
+        Args:
+            old_struct (:class:`GenericStruct` or :class:`GenericMessage`):
+                This method will receive an instance of :class:`GenericStruct`
+                or :class:`GenericMessage`. This instance is the class
+                attribute of some other class (eg: header instance for a
+                Message).
+            new_version (str): String on the format `v0x0?` with the required
+                openflow version.
+        Return:
+            new_struct (:class:`GenericStruct` or :class:`GenericMessage`): The
+                updated version of the given struct, with its attributes also
+                updated and the attributes values inherited (and updated).
+        """
+        cls = type(old_struct)
+        cls_name = cls.__name__
+        cls_mod = cls.__module__
+        new_cls = MetaStruct.get_updated_pyof_class(cls_name, cls_mod,
+                                                    new_version)
+        new_struct = new_cls()
+
+        update_genstruct_attrs(old_struct, new_struct)
+
+        return new_struct
+
+    @staticmethod
     def update_obj_version(obj, new_version):
         """Return a class atrribute on a different pyof version.
 
