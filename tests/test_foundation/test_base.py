@@ -4,6 +4,7 @@ import unittest
 from pyof.foundation import base, basic_types
 
 
+@unittest.skip
 class TestGenericStruct(unittest.TestCase):
     """Testing GenericStruct class."""
 

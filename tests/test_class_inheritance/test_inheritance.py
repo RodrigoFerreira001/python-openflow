@@ -5,6 +5,7 @@ from pyof.foundation.base import GenericStruct
 from pyof.foundation.basic_types import UBInt8, UBInt16, UBInt32, UBInt64
 
 
+@unittest.skip
 class TestInheritance(unittest.TestCase):
     """Testing GenericStruct class inheritance."""
 
