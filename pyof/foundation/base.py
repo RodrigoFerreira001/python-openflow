@@ -688,8 +688,8 @@ class MetaStruct(type):
         new_obj = type(obj)(new_pyof_cls)
         return new_obj
 
-    @staticmethod
-    def update_obj_version(obj, new_version):
+    @classmethod
+    def update_obj_version(cls, obj, new_version):
         """Return a class atrribute on a different pyof version.
 
         This method receives the class attribute (object) and an openflow
@@ -744,16 +744,7 @@ class MetaStruct(type):
         Return:
             obj: An updated instance of the passed class attribute.
         """
-        #: If the module does not starts with 'pyof.', then this is not an
-        #: object defined inside the pyof scope, so we won't do anything with
-        #: it, as much as if no 'new_version' is passed or the obj is None.
-        #: So we just return a copy of the object.
-        if obj is None or new_version is None:
-            return copy(obj)
-        elif inspect.isclass(obj):
-            if not obj.__module__.startswith('pyof.'):
-                return copy(obj)
-        elif not type(obj).__module__.startswith('pyof.'):
+        if cls.not_need_update(obj, new_version):
             return copy(obj)
 
         #: Update the object based on some cases.
@@ -771,6 +762,19 @@ class MetaStruct(type):
             new_obj = MetaStruct.update_gstruct(obj, new_version)
 
         return new_obj
+
+    @staticmethod
+    def not_need_update(obj, new_version):
+        """Check whether obj is an instance of a pyof class.
+
+        If the module does not starts with 'pyof.', then this is not an
+        object defined inside the pyof scope, so we won't do anything with
+        it, as much as if no 'new_version' is passed or the obj is None.
+        So we just return a copy of the object.
+        """
+        cls = obj if inspect.isclass(obj) else type(obj)
+        is_pyof = cls.__module__.startswith('pyof.')
+        return obj is None or new_version is None or not is_pyof
 
 
 class GenericStruct(object, metaclass=MetaStruct):
