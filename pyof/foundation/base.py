@@ -491,6 +491,24 @@ class MetaStruct(type):
         return new_obj
 
     @staticmethod
+    def update_enum_or_bitmask(cls, new_version):
+        """Return a the Enum and/or BitMask on the `new_version`.
+
+        Args:
+            cls (:class:`enum.Enum` or :class:`GenericBitMask`): A reference
+                for a class of type :class:`Enum` or :class:`GenericBitMask`.
+            new_version (str): String on the format `v0x0?` with the required
+                openflow version.
+        Return:
+            new_cls (class): The updated version of the enum class or the
+                bitmask class.
+        """
+        new_cls = MetaStruct.get_updated_pyof_class(cls.__name__,
+                                                    cls.__module__,
+                                                    new_version)
+        return new_cls
+
+    @staticmethod
     def update_obj_version(obj, new_version):
         """Return a class atrribute on a different pyof version.
 
