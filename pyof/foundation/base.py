@@ -450,64 +450,88 @@ class MetaStruct(type):
             return None
 
     @staticmethod
-    def get_pyof_obj_new_version(name, obj, new_version):
+    def update_obj_version(obj, new_version):
         """Return a class atrribute on a different pyof version.
 
-        This method receives the name of a class attribute, the class attribute
-        itself (object) and an openflow version.
-        The attribute will be evaluated and from it we will recover its class
-        and the module where the class was defined.
-        If the module is a "python-openflow version specific module" (starts
-        with "pyof.v0"), then we will get it's version and if it is different
-        from the 'new_version', then we will get the module on the
-        'new_version', look for the 'obj' class on the new module and return
-        an instance of the new version of the 'obj'.
+        This method receives the class attribute (object) and an openflow
+        version.
+
+        A newer version of this attribute will be returned, and, since it is an
+        instance of some class that serves as class attribute, it may have some
+        predefined values (on the instance). In such cases, we will also get
+        those predefined values and set their updated versions, if any, on the
+        returned object.
+
+        The work of this method consider some different cases of obj types:
+        1) Enum and GenericBitMask: They are used on enum_refs and are
+             always used as classes, never as instances.
+        2) GenericTypes objects: that may or may not have a preset _value
+             and enum_ref.
+        3) TypeLists: Despite the fact that they inherit from GenericStruct,
+             they have a _pyof_class attribute that needs to be checked and,
+             if needed, updated.
+        4) GenericStruct objects: we have to get the correct version of the
+             struct. The update of the struct attributes are expected to be
+             done by recursion.
 
         Example:
-            >> from pyof.v0x01.common.header import Header
-            >> name = 'header'
-            >> obj = Header()
-            >> obj
-            <pyof.v0x01.common.header.Header at 0x...>
-            >> new_version = 'v0x02'
-            >> MetaStruct.get_pyof_new_version(name, obj, new_version)
-            ('header', <pyof.v0x02.common.header.Header at 0x...)
+              >> from pyof.v0x01.common.header import Hello
+              >> msg = Hello()
+              >> obj = msg.header
+              >> obj
+              <pyof.v0x01.common.header.Header at 0x...>
+              >> obj.version
+              PyofVersion.v0x01
+              >> obj.message_type
+              <Type.OFPT_HELLO: 0>
+              >> type(obj).message_type.enum_ref.__module__)
+              pyof.v0x01.common.header
+              >> new_version = 'v0x02'
+              >> new_obj = MetaStruct.update_obj_version(obj, new_version)
+              >> new_obj
+              <pyof.v0x02.common.header.Header at 0x...>
+              >> new_obj.version
+              PyofVersion.v0x02
+              >> new_obj.message_type
+              <Type.OFPT_HELLO: 0>
+              >> type(new_obj).message_type.enum_ref.__module__)
+              pyof.v0x02.common.header
 
         Args:
-            name (str): the name of the class attribute being handled.
-            obj (object): the class attribute itself
+            obj (object): the class attribute itself (an instance).
             new_version (string): the pyof version in which you want the object
                 'obj'.
 
         Return:
-            (name, obj): A tuple in which the first item is the name of the
-                class attribute (the same that was passed), and the second item
-                is a instance of the passed class attribute. If the class
-                attribute is not a pyof versioned attribute, then the same
-                passed object is returned without any changes. Also, if the obj
-                is a pyof versioned attribute, but it is already on the right
-                version (same as new_version), then the passed obj is return.
+            obj: An updated instance of the passed class attribute.
         """
-        if new_version is None:
-            return (name, obj)
+        #: If the module does not starts with 'pyof.', then this is not an
+        #: object defined inside the pyof scope, so we won't do anything with
+        #: it, as much as if no 'new_version' is passed or the obj is None.
+        #: So we just return a copy of the object.
+        if obj is None or new_version is None:
+            return copy(obj)
+        elif inspect.isclass(obj):
+            if not obj.__module__.startswith('pyof.'):
+                return copy(obj)
+        elif not type(obj).__module__.startswith('pyof.'):
+            return copy(obj)
 
-        cls = obj.__class__
-        cls_name = cls.__name__
-        cls_mod = cls.__module__
+        #: Update the object based on some cases.
+        if inspect.isclass(obj) and issubclass(obj, Enum):
+            #: This came from an enum_ref
+            new_obj = MetaStruct.update_enum_or_bitmask(obj, new_version)
+        elif inspect.isclass(obj) and issubclass(obj, GenericBitMask):
+            #: This came from an enum_ref
+            new_obj = MetaStruct.update_enum_or_bitmask(obj, new_version)
+        elif isinstance(obj, GenericType):
+            new_obj = MetaStruct.update_gtype(obj, new_version)
+        elif type(obj).__name__ == 'FixedTypeList':
+            new_obj = MetaStruct.update_fixedTypeList(obj, new_version)
+        else:
+            new_obj = MetaStruct.update_gstruct(obj, new_version)
 
-        #: If the module name does not starts with pyof.v0 then it is not a
-        #: 'pyof versioned' module (OpenFlow specification defined), so we do
-        #: not have anything to do with it.
-        new_mod = MetaStruct.replace_pyof_version(cls_mod, new_version)
-        if new_mod is not None:
-            # Loads the module
-            new_mod = importlib.import_module(new_mod)
-            #: Get the class from the loaded module
-            new_cls = getattr(new_mod, cls_name)
-            #: return the tuple with the attribute name and the instance
-            return (name, new_cls())
-
-        return (name, obj)
+        return new_obj
 
 
 class GenericStruct(object, metaclass=MetaStruct):
