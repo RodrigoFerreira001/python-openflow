@@ -663,6 +663,32 @@ class MetaStruct(type):
         return new_struct
 
     @staticmethod
+    def update_fixedTypeList(obj, new_version):
+        """Update a :class:`~foundation.basic_types.FixedTypeList` instance.
+
+        This method returns an instance of FixedTypeList with the class defined
+        on the `._pyof_class` attribute of the `obj` (which is an instance the
+        FixedTypeList from the older version in question).
+
+        Args:
+            obj (:class:`~foundation.basic_types.FixedTypeList`): A instance of
+                FixedTypeList class used as class attribute on another class.
+            new_version (str): String on the format `v0x0?` with the required
+                openflow version.
+        Returns:
+            new_obj (:class:`~foundation.basic_types.FixedTypeList`): A new
+                instance of the given FixedTypeList with the `_pyof_class`
+                attribute updated to the `new_version` version.
+        """
+        #: If the object is a direct instance of FixedTypeList, not from a
+        #: subclass, then we just have to inherit the _pyof_class attribute
+        #: updated to the current required version.
+        new_pyof_cls = MetaStruct.update_obj_version(obj._pyof_class,
+                                                     new_version)
+        new_obj = type(obj)(new_pyof_cls)
+        return new_obj
+
+    @staticmethod
     def update_obj_version(obj, new_version):
         """Return a class atrribute on a different pyof version.
 
