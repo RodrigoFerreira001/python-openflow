@@ -556,6 +556,41 @@ class MetaStruct(type):
                                                     new_version)
         new_struct = new_cls()
 
+        def update_genstruct_attrs(old_struct, new_struct):
+            """Update the attributes of new_struct based on old_struct.
+
+            Loops over the "python-openflow defined" attributes of the struct
+            instance and update its content considering the value defined on
+            the older version of the struct.
+
+            Just pointing out the we are talking about instances here, not
+            classes. This instances serves as attributes for other classes.
+
+            Args:
+                old_struct (:class:`GenericStruct`): The **instance** of a
+                    GenericStruct that serves as class attribute for another
+                    GenericStruct, but on an different version from that being
+                    created 'now'.
+                new_struct (:class:`GenericStruct`): The **instance** of a
+                    GenericStruct that serves as class attribute for the class
+                    being created 'now'.
+
+            Return:
+                new_struct (:class:`GenericStruct`): The updated version of the
+                    instance, considering all `__init__` values.
+            """
+            #: old_struct = instance on the old class version
+            #: new_struct = instance on the new class version
+
+            for _name, _attr in new_struct._get_class_attributes():
+                if isinstance(_attr, GenericType):
+                    old_attr = getattr(old_struct, _name)
+                    new_attr = getattr(new_struct, _name)
+                    if new_attr is not _attr:
+                        new_attr = new_gtype_instance(old_attr, new_attr,
+                                                      _attr)
+                        setattr(new_struct, _name, new_attr)
+
         update_genstruct_attrs(old_struct, new_struct)
 
         return new_struct
