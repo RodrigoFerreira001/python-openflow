@@ -556,6 +556,73 @@ class MetaStruct(type):
                                                     new_version)
         new_struct = new_cls()
 
+        def new_gtype_instance(old_gt_attr, new_gt_attr, class_attr):
+            """Return a new instance of a generic type attribute.
+
+            This method is responsible for instantiating a new instance of a
+            given GenericType class and fulfill this new instance with the
+            correct preset values inherited from the 'old_gt_attr' instance,
+            such as the `_value`, the `length` on a Char, `dpid` on a DPID, and
+            so on.
+
+            All attributes defined on the `__init__` method of the GenericTypes
+            must be evaluated on this method on a specific if clause.
+
+            We have one really special case that is the instance related to the
+            header.version UBInt8 attribute. In this case, the enum_ref is the
+            `:class:~foundation.constants.PyofVersion` Enum, that is the only
+            Enum outside of our OpenFlow versioning scheme (v0x0?). In this
+            case we do not want to inherit the version from the previous
+            instance of the header. Instead of it we want the version defined
+            on the newer Header class.
+
+            Args:
+                old_gt_attr (:class:`GenericType`): An **instance** of a
+                    GenericType that serves as attribute for another class
+                    (old_struct).
+                new_gt_attr (:class:`GenericType`): An **instance** of a
+                    GenericType that serves as attribute for another class
+                    (new_struct).
+                class_attr (:class:`GenericType`): The class attribute in which
+                    the new_gt_attr are based.
+            Returns:
+                A instance of the same type of the given arguments with the
+                correct content.
+            """
+            #: Updating the struct attributes with values setted on the class.
+            #: For GenericTypes: _value
+            args = {}
+            args['enum_ref'] = class_attr.enum_ref
+
+            if isinstance(old_gt_attr, GenericType):
+                old_value = old_gt_attr._value
+            else:
+                old_value = old_gt_attr
+
+            if old_value is None:
+                args['value'] = None
+            elif class_attr.enum_ref:
+                if class_attr.enum_ref.__name__ != 'PyofVersion':
+                    args['value'] = class_attr.enum_ref[old_value.name]
+                else:
+                    args['value'] = class_attr._value
+            else:
+                args['value'] = old_value
+
+            if hasattr(new_gt_attr, 'length'):
+                args['length'] = old_gt_attr.length
+
+            if hasattr(new_gt_attr, 'dpid'):
+                args['dpid'] = old_gt_attr.dpid
+
+            if hasattr(new_gt_attr, 'address'):
+                args['address'] = old_gt_attr.address
+
+            if hasattr(new_gt_attr, 'hw_address'):
+                args['hw_address'] = old_gt_attr.hw_address
+
+            return type(class_attr)(**args)
+
         def update_genstruct_attrs(old_struct, new_struct):
             """Update the attributes of new_struct based on old_struct.
 
