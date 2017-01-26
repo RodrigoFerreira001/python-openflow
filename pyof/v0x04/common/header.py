@@ -2,13 +2,9 @@
 
 # System imports
 from enum import Enum
-from random import randint
 
 # Local source tree imports
-from pyof.foundation.base import GenericStruct
-from pyof.foundation.basic_types import UBInt8, UBInt16, UBInt32
-from pyof.foundation.constants import UBINT32_MAX_VALUE as MAXID
-from pyof.v0x04.common.constants import OFP_VERSION
+from pyof.v0x01.common.header import Header
 
 # Third-party imports
 
@@ -82,24 +78,7 @@ class Type(Enum):
 # Classes
 
 
-class Header(GenericStruct):
+class Header(Header):
     """Representation of an OpenFlow message Header."""
 
-    version = UBInt8(OFP_VERSION)
-    message_type = UBInt8(enum_ref=Type)
-    length = UBInt16()
-    xid = UBInt32()
-
-    def __init__(self, message_type=None, length=None, xid=randint(0, MAXID)):
-        """The constructor takes the optional parameters below.
-
-        Args:
-            message_type (Type): One of the OFPT_ constants.
-            length (int): Length including this ofp_header.
-            xid (int): Transaction id associated with this packet. Replies use
-                the same id as was in the request to facilitate pairing.
-        """
-        super().__init__()
-        self.message_type = message_type
-        self.length = length
-        self.xid = xid
+    pass
