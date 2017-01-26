@@ -16,11 +16,14 @@ These classes are used in all parts of this library.
 
 # System imports
 import importlib
+import inspect
 import re
 import struct
 from collections import OrderedDict
-from copy import deepcopy
+from copy import copy, deepcopy
 from enum import Enum
+from random import randint
+from pyof.foundation.constants import UBINT32_MAX_VALUE as MAXID
 
 # Local source tree imports
 from pyof.foundation.exceptions import (BadValueException, PackException,
