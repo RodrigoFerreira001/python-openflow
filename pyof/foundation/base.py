@@ -450,6 +450,47 @@ class MetaStruct(type):
             return None
 
     @staticmethod
+    def update_gtype(obj, new_version):
+        """Update a GenericType type object.
+
+        This method evaluates the object `enum_ref` and `value` and update them
+        if necessary. This means that the `enum_ref` content, if there is one,
+        will be updated (for the `new_version` version) and the `value` will
+        also be updated to be in compliance with the new enum, if needed.
+
+        Args:
+            obj (:class:GenericType): An instance of GenericType.
+            new_version (str): String on the format `v0x0?` with the required
+                openflow version.
+
+        Return:
+            obj (:class:GenericType): A new instance of the same GenericType
+                but with the `enum_ref` and `value` updated to the
+                `new_version`.
+        """
+        new_obj = deepcopy(obj)
+        if isinstance(obj, GenericType) and new_version is not None:
+            old_enum = obj.enum_ref
+            #: if we use '.value' here we will get only the str representation
+            #: of the value, but we want the full value object. This is
+            #: specially important if the value is a instance of Enum or a
+            #: Bitmask object.
+            old_value = obj._value
+
+            if old_enum is None:
+                new_obj._value = old_value
+            elif old_enum.__name__ == 'PyofVersion':
+                new_obj.enum_ref = old_enum
+                new_obj._value = old_enum[new_version]
+            else:
+                #: get the newer version of the enum_ref and set it.
+                new_enum = MetaStruct.update_obj_version(old_enum, new_version)
+                new_obj.enum_ref = new_enum
+                if old_value is not None:
+                    new_obj._value = new_enum[old_value.name]
+        return new_obj
+
+    @staticmethod
     def update_obj_version(obj, new_version):
         """Return a class atrribute on a different pyof version.
 
