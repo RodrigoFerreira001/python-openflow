@@ -355,10 +355,13 @@ class MetaStruct(type):
         # renamed_attributes = classdict.pop('_renamed_attributes', [])
         # reordered_attributes = classdict.pop('_reordered_attributes', {})
 
-        curr_module = classdict.get('__module__')
-        curr_version = MetaStruct.get_pyof_version(curr_module)
+        # curr_module = classdict.get('__module__')
+        # curr_version = MetaStruct.get_pyof_mod_version(curr_module)
+        mod = inspect.currentframe().f_back.f_locals['__name__']
+        curr_version = MetaStruct.get_pyof_mod_version(mod)
 
         inherited_attributes = None
+        new_attributes = None
 
         #: looking for (kytos) class attributes defined on the bases
         #: classes so we can copy them into the current class being created
@@ -367,47 +370,32 @@ class MetaStruct(type):
             #: Check if we are inheriting from one of our classes.
             if isinstance(base, MetaStruct):
                 inherited_attributes = OrderedDict()
+                new_attributes = OrderedDict()
                 for attr_name, obj in base._get_class_attributes():
+                    inherited_attributes.update([(attr_name, obj)])
                     #: Get an updated version of this attribute,
                     #: considering the version of the current class being
                     #: created.
-                    attr = MetaStruct.get_pyof_obj_new_version(attr_name, obj,
-                                                               curr_version
-                                                               )
+                    new_obj = MetaStruct.update_obj_version(obj, curr_version)
 
-                    if attr_name == 'header':
-                        #: Here we are going to set the message_type on the
-                        #: header, according to the message_type of the
-                        #: parent class.
-                        old_enum = obj.message_type
-                        new_header = attr[1]
-                        new_enum = new_header.__class__.message_type.enum_ref
-                        #: This 'if' will be removed on the future with an
-                        #: improved version of __init_subclass__ method of the
-                        #: GenericMessage class
-                        if old_enum:
-                            msg_type_name = old_enum.name
-                            new_type = new_enum[msg_type_name]
-                            new_header.message_type = new_type
-                        attr = (attr[0], new_header)
-
-                    inherited_attributes.update([attr])
+                    new_attributes.update([(attr_name, new_obj)])
                 #: We are going to inherit just from the 'closest parent'
+                #: Because of that we break the loop here.
                 break
 
         #: If we have inherited something, then first we will remove the
         #: attributes marked to be removed on the 'removed_attributes' and
         #: after that we will update the inherited 'classdict' with the
         #: attributes from the current classdict.
-        if inherited_attributes is not None:
+        if new_attributes is not None:
             #: removing attributes set to be removed
             for attr_name in removed_attributes:
-                inherited_attributes.pop(attr_name, None)
+                new_attributes.pop(attr_name, None)
 
             #: Updating the inherited attributes with those defined on the
             #: body of the class being created.
-            inherited_attributes.update(classdict)
-            classdict = inherited_attributes
+            new_attributes.update(classdict)
+            classdict = new_attributes
 
         return super().__new__(cls, name, bases, classdict, **kwargs)
 
