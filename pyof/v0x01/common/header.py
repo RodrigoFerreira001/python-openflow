@@ -8,7 +8,7 @@ from random import randint
 from pyof.foundation.base import GenericStruct
 from pyof.foundation.basic_types import UBInt8, UBInt16, UBInt32
 from pyof.foundation.constants import UBINT32_MAX_VALUE as MAXID
-from pyof.v0x01.common.constants import OFP_VERSION
+from pyof.foundation.constants import PyofVersion
 
 # Third-party imports
 
@@ -68,7 +68,7 @@ class Type(Enum):
 class Header(GenericStruct):
     """Representation of an OpenFlow message Header."""
 
-    version = UBInt8(OFP_VERSION)
+    version = UBInt8(PyofVersion.v0x01, enum_ref=PyofVersion)
     message_type = UBInt8(enum_ref=Type)
     length = UBInt16()
     xid = UBInt32()
