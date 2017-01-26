@@ -420,7 +420,7 @@ class MetaStruct(type):
         return None
 
     @staticmethod
-    def replace_pyof_version(module_fullname, version):
+    def get_updated_pyof_class(cls_name, module_fullname, version):
         """Replace the OF Version of a module fullname.
 
         Get's a module name (eg. 'pyof.v0x01.common.header') and returns it on
@@ -438,11 +438,16 @@ class MetaStruct(type):
             new_module_fullname (str): The new module fullname, with the
                 replaced version, on the format "pyof.v0x01.common.header".
         """
-        module_version = MetaStruct.get_pyof_version(module_fullname)
-        if not module_version or module_version == version:
+        try:
+            module_version = MetaStruct.get_pyof_mod_version(module_fullname)
+            new_mod = module_fullname.replace(module_version, version)
+            #: Loads the module
+            new_mod = importlib.import_module(new_mod)
+            #: Get the class from the loaded module
+            new_cls = getattr(new_mod, cls_name)
+            return new_cls
+        except Exception as message:
             return None
-        else:
-            return module_fullname.replace(module_version, version)
 
     @staticmethod
     def get_pyof_obj_new_version(name, obj, new_version):
