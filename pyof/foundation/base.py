@@ -235,6 +235,82 @@ class GenericType:
         return self._value and issubclass(type(self._value), GenericBitMask)
 
 
+class MetaBitMask(type):
+    """MetaClass to create a special BitMaskEnum type.
+
+    You probably do not need to use this class. Inherit from
+    :class:`GenericBitMask` instead.
+
+    This metaclass converts the declared class attributes into elements of an
+    enum. It also replaces the :meth:`__dir__` and :meth:`__getattr__` methods,
+    so the resulting class will behave as an :class:`~Enum` class (you can
+    access object.ELEMENT and recover either values or names).
+    """
+
+    def __new__(mcs, name, bases, classdict):
+        """Convert class attributes into enum elements."""
+        _enum = OrderedDict([(key, value) for key, value in classdict.items()
+                             if key[0] != '_' and not
+                             hasattr(value, '__call__') and not
+                             isinstance(value, property)])
+        if _enum:
+            classdict = {key: value for key, value in classdict.items()
+                         if key[0] == '_' or hasattr(value, '__call__') or
+                         isinstance(value, property)}
+            classdict['_enum'] = _enum
+        return type.__new__(mcs, name, bases, classdict)
+
+    def __getattr__(cls, name):
+        return cls._enum[name]
+
+    def __dir__(cls):
+        res = dir(type(cls)) + list(cls.__dict__.keys())
+        if cls is not GenericBitMask:
+            res.extend(cls._enum)
+        return res
+
+
+class GenericBitMask(object, metaclass=MetaBitMask):
+    """Base class for enums that use bitmask values."""
+
+    def __init__(self, bitmask=None):
+        """The constructor has the optional parameter below.
+
+        Args:
+            bitmask: Bitmask value.
+        """
+        self.bitmask = bitmask
+        self._enum = {}
+
+    def __str__(self):
+        return "{}".format(self.bitmask)
+
+    def __repr__(self):
+        return "{}({})".format(type(self).__name__, self.bitmask)
+
+    @property
+    def names(self):
+        """List of selected enum names.
+
+        Returns:
+            list: Enum names.
+        """
+        result = []
+        for key, value in self.iteritems():
+            if value & self.bitmask:
+                result.append(key)
+        return result
+
+    def iteritems(self):
+        """Generator for attributes' name-value pairs.
+
+        Returns:
+            generator: Attributes' (name, value) tuples.
+        """
+        for key, value in self._enum.items():
+            yield (key, value)
+
+
 class MetaStruct(type):
     """MetaClass that dinamically handles openflow version of class attributes.
 
@@ -757,79 +833,3 @@ class GenericMessage(GenericStruct):
         on the header. This is mandatory.
         """
         self.header.length = self.get_size()
-
-
-class MetaBitMask(type):
-    """MetaClass to create a special BitMaskEnum type.
-
-    You probably do not need to use this class. Inherit from
-    :class:`GenericBitMask` instead.
-
-    This metaclass converts the declared class attributes into elements of an
-    enum. It also replaces the :meth:`__dir__` and :meth:`__getattr__` methods,
-    so the resulting class will behave as an :class:`~Enum` class (you can
-    access object.ELEMENT and recover either values or names).
-    """
-
-    def __new__(mcs, name, bases, classdict):
-        """Convert class attributes into enum elements."""
-        _enum = OrderedDict([(key, value) for key, value in classdict.items()
-                             if key[0] != '_' and not
-                             hasattr(value, '__call__') and not
-                             isinstance(value, property)])
-        if _enum:
-            classdict = {key: value for key, value in classdict.items()
-                         if key[0] == '_' or hasattr(value, '__call__') or
-                         isinstance(value, property)}
-            classdict['_enum'] = _enum
-        return type.__new__(mcs, name, bases, classdict)
-
-    def __getattr__(cls, name):
-        return cls._enum[name]
-
-    def __dir__(cls):
-        res = dir(type(cls)) + list(cls.__dict__.keys())
-        if cls is not GenericBitMask:
-            res.extend(cls._enum)
-        return res
-
-
-class GenericBitMask(object, metaclass=MetaBitMask):
-    """Base class for enums that use bitmask values."""
-
-    def __init__(self, bitmask=None):
-        """The constructor has the optional parameter below.
-
-        Args:
-            bitmask: Bitmask value.
-        """
-        self.bitmask = bitmask
-        self._enum = {}
-
-    def __str__(self):
-        return "{}".format(self.bitmask)
-
-    def __repr__(self):
-        return "{}({})".format(type(self).__name__, self.bitmask)
-
-    @property
-    def names(self):
-        """List of selected enum names.
-
-        Returns:
-            list: Enum names.
-        """
-        result = []
-        for key, value in self.iteritems():
-            if value & self.bitmask:
-                result.append(key)
-        return result
-
-    def iteritems(self):
-        """Generator for attributes' name-value pairs.
-
-        Returns:
-            generator: Attributes' (name, value) tuples.
-        """
-        for key, value in self._enum.items():
-            yield (key, value)
