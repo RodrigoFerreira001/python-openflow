@@ -999,6 +999,11 @@ class GenericStruct(object, metaclass=MetaStruct):
         # pylint: disable=unreachable
         return self._validate_attributes_type()
 
+    @staticmethod
+    def is_message():
+        """Return False to indicate that this is not an OF Message."""
+        return False
+
 
 class GenericMessage(GenericStruct):
     """Base class that is the foundation for all OpenFlow messages.
@@ -1023,6 +1028,13 @@ class GenericMessage(GenericStruct):
             type_enum = cls.header.__class__.message_type.enum_ref
             try:
                 cls.header.message_type = type_enum[message_type]
+
+                def is_message():
+                    """Return True to indicate that this class is a message."""
+                    return True
+
+                cls.is_message = staticmethod(is_message)
+
             except AttributeError:
                 msg = "The header attribute must be implemented on the class "
                 msg += cls.__name__
