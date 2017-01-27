@@ -17,4 +17,3 @@ class TestStatsReply(TestStruct):
                                     body_type=StatsTypes.OFPST_GROUP,
                                     flags=0x0001, body=[])
         super().set_minimum_size(16)
-        print('*'*2000)

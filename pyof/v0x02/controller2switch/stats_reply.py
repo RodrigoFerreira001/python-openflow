@@ -3,7 +3,7 @@ from pyof.foundation.basic_types import BinaryData, UBInt16, Pad
 from pyof.v0x02.common.header import Header, Type
 
 from pyof.v0x01.controller2switch.stats_reply import StatsReply
-from pyof.v0x01.controller2switch.common import StatsTypes
+from pyof.v0x02.controller2switch.common import StatsTypes
 
 StatsReply_v0x01  = StatsReply
 
@@ -16,3 +16,5 @@ class StatsReply(StatsReply_v0x01):
     flags =UBInt16()
     pad1 = Pad(4)
     body = BinaryData()
+
+    _removed_attributes = ['body']

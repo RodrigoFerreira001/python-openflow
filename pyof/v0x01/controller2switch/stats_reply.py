@@ -19,6 +19,7 @@ class StatsReply(GenericMessage):
     flags = UBInt16()
     body = BinaryData()
 
+    # List of Class that can be packed/unpacked using StatsReply
     _types = [DescStats, FlowStats, AggregateStatsReply, TableStats,
               PortStats, QueueStats]
 
@@ -73,10 +74,14 @@ class StatsReply(GenericMessage):
 
     def _unpack_body(self):
         """Unpack `body` replace it by the result."""
-        if self.body_type.value == 0:
-            obj = self._types[self.body_type.value]()
-        else:
-            obj = FixedTypeList(pyof_class=self._types[self.body_type.value])
-
+        obj = self._get_body_instance()
         obj.unpack(self.body.value)
         self.body = obj
+
+    def _get_body_instance(self):
+        """Method used to return the body instance."""
+        if self.body_type.value == 0:
+            return self._types[0]()
+        elif self.body_type.value < len(self._types):
+            return FixedTypeList(pyof_class=self._types[self.body_type.value])
+        return BinaryData(b'')

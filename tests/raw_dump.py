@@ -1,6 +1,5 @@
 """Help reading raw dump files."""
-from pyof.v0x01.common.header import Header
-from pyof.v0x01.common.utils import new_message_from_header
+from pyof.foundation.utils import unpack_message
 
 
 class RawDump:
@@ -39,19 +38,4 @@ class RawDump:
                 header.
         """
         content = self.read()
-        raw_header = content[:self._HEADER_BYTES]
-        header = _unpack_header(raw_header)
-        raw_msg = content[self._HEADER_BYTES:header.length.value]
-        return _unpack_message(header, raw_msg)
-
-
-def _unpack_header(raw_header):
-    header = Header()
-    header.unpack(raw_header)
-    return header
-
-
-def _unpack_message(header, raw_msg):
-    msg = new_message_from_header(header)
-    msg.unpack(raw_msg)
-    return msg
+        return unpack_message(content)
