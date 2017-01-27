@@ -1011,24 +1011,27 @@ class GenericMessage(GenericStruct):
 
     header = None
 
+    _messages = {}
+
     def __init__(self, xid=None):
         """Initialize header's xid."""
         super().__init__()
         self.header.xid = randint(0, MAXID) if xid is None else xid
 
-    def __init_subclass__(cls, msg_type, **kwargs):
-        if msg_type is None:
-            super().__init_subclass__(**kwargs)
-        elif type(msg_type) is not cls.header.__class__.message_type.enum_ref:
-            msg = "Wrong message_type for class: {}".format(cls.__name__)
-            raise Exception(msg)
-
-        try:
-            cls.header.message_type = msg_type
-        except AttributeError:
-            msg = "The header attribute must be implemented on the class "
-            msg += cls.__name__ + " and must be an instance of Header class."
-            raise NotImplementedError(msg)
+    def __init_subclass__(cls, message_type, **kwargs):
+        if message_type is not None:
+            type_enum = cls.header.__class__.message_type.enum_ref
+            try:
+                cls.header.message_type = type_enum[message_type]
+            except AttributeError:
+                msg = "The header attribute must be implemented on the class "
+                msg += cls.__name__
+                msg += " and must be an instance of Header class."
+                raise NotImplementedError(msg)
+            except KeyError:
+                msg = "Wrong message_type ({}) for class {}"
+                msg = msg.format(message_type, cls.__name__)
+                raise Exception(msg)
 
         super().__init_subclass__(**kwargs)
 
