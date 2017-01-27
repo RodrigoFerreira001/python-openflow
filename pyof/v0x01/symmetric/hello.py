@@ -12,18 +12,10 @@ __all__ = ('Hello',)
 # Classes
 
 
-class Hello(GenericMessage):
+class Hello(GenericMessage, message_type='OFPT_HELLO'):
     """OpenFlow Hello Message.
 
     This message does not contain a body beyond the OpenFlow Header.
     """
 
-    header = Header(message_type=Type.OFPT_HELLO, length=8)
-
-    def __init__(self, xid=None):
-        """The constructor takes the parameters below.
-
-        Args:
-            xid (int): xid to be used on the message header.
-        """
-        super().__init__(xid)
+    header = Header()
