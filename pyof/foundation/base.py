@@ -1027,7 +1027,15 @@ class GenericMessage(GenericStruct):
         if message_type is not None:
             type_enum = cls.header.__class__.message_type.enum_ref
             try:
+                #: Set the message type on the class header.
                 cls.header.message_type = type_enum[message_type]
+
+
+                #: now we save our new class on GenericMessage._messages
+                version = cls.header.version.value
+                if version not in GenericMessage._messages:
+                    GenericMessage._messages[version] = {}
+                GenericMessage._messages[version][message_type] = cls
 
                 def is_message():
                     """Return True to indicate that this class is a message."""
@@ -1044,6 +1052,19 @@ class GenericMessage(GenericStruct):
                 msg = "Wrong message_type ({}) for class {}"
                 msg = msg.format(message_type, cls.__name__)
                 raise Exception(msg)
+
+        def raise_protected(self):
+            """Pretect access to GenericMessage._messages.
+
+            This method will work as a property on all messages just to
+            avoid direct access to the _messages attribute from
+            GenericMessage class.
+            """
+            msg = '_messages can only be accessed through the '
+            msg += 'GenericMessage class.'
+            raise Exception(msg)
+
+        cls._messages = property(raise_protected)
 
         super().__init_subclass__(**kwargs)
 
