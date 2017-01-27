@@ -89,7 +89,7 @@ To parse a message, use ``unpack_message()``:
 
 .. code:: python
 
-   >>> from pyof.v0x01.common.utils import unpack_message
+   >>> from pyof.foundation.utils import unpack_message
    >>> binary_msg = b"\x01\x05\x00\x08\x14\xad'\x8d"
    >>> msg = unpack_message(binary_msg)
    >>> print(msg.header.message_type)
